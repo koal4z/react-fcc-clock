@@ -62,7 +62,7 @@ function App() {
     if (time === 0) {
       clearInterval(interval);
       setTimeout(() => {
-        setIsBreak(!isBreak);
+        setIsBreak(true);
         setTime(breakLength * 60);
       }, 1000);
     }
@@ -115,9 +115,7 @@ function App() {
               icon={isPlay ? 'pause' : 'play'}
               onClick={handlerPlay}
             />
-            <div id="reset">
-              <MDBIcon icon="sync" onClick={handlerReset} />
-            </div>
+            <MDBIcon id="reset" icon="sync" onClick={handlerReset} />
           </div>
         </div>
       </div>

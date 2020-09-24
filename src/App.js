@@ -49,20 +49,22 @@ function App() {
   };
 
   useEffect(() => {
-    console.log(convertTime(time));
+    // console.log(convertTime(time));
     let interval;
     if (isPlay) {
       interval = setInterval(() => {
-        if (time >= 0) {
+        if (time > 0) {
           setTime(time - 1);
         }
       }, 1000);
     }
 
     if (time === 0) {
-      // setIsBreak(!isBreak);
-      // setTime(breakLength * 60);
-      setIsPlay(false);
+      clearInterval(interval);
+      setTimeout(() => {
+        setIsBreak(!isBreak);
+        setTime(breakLength * 60);
+      }, 1000);
     }
     return () => {
       clearInterval(interval);
@@ -108,9 +110,11 @@ function App() {
           <div id="timer-label">{isBreak ? 'Break' : 'Session'}</div>
           <div id="time-left">{convertTime(time)}</div>
           <div className="length-box">
-            <div id="start_stop">
-              <MDBIcon icon={isPlay ? 'pause' : 'play'} onClick={handlerPlay} />
-            </div>
+            <MDBIcon
+              id="start_stop"
+              icon={isPlay ? 'pause' : 'play'}
+              onClick={handlerPlay}
+            />
             <div id="reset">
               <MDBIcon icon="sync" onClick={handlerReset} />
             </div>

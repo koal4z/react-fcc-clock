@@ -13,55 +13,56 @@ function App() {
   };
 
   const handlerIncrease = (type) => {
-    if (type === 'break' && breakLength < 60) {
+    if (!isPlay && type === 'break' && breakLength < 60) {
       setBreakLength(breakLength + 1);
       if (isBreak) {
-        setTime(time + 60);
+        setTime((breakLength + 1) * 60);
       }
     }
 
-    if (type === 'session' && breakLength < 60) {
+    if (!isPlay && type === 'session' && breakLength < 60) {
       setSessionLength(sessionLength + 1);
-      setTime(time + 60);
+      setTime((sessionLength + 1) * 60);
     }
   };
 
   const handlerDecrease = (type) => {
-    if (type === 'break' && breakLength > 1) {
+    if (!isPlay && type === 'break' && breakLength > 1) {
       setBreakLength(breakLength - 1);
       if (isBreak) {
-        setTime(time - 60);
+        setTime((breakLength - 1) * 60);
       }
-
     }
 
-    if (type === 'session' && sessionLength > 1) {
+    if (!isPlay && type === 'session' && sessionLength > 1) {
       setSessionLength(sessionLength - 1);
-      setTime(time - 60);
+      setTime((sessionLength - 1) * 60);
     }
   };
 
   const handlerReset = () => {
+    setTime(1500);
     setBreakLength(5);
     setSessionLength(25);
-    setTime(1500);
     setIsPlay(false);
     setIsBreak(false);
   };
 
   useEffect(() => {
+    console.log(convertTime(time));
     let interval;
     if (isPlay) {
       interval = setInterval(() => {
-        if (time > 0) {
-          return setTime(time - 1);
+        if (time >= 0) {
+          setTime(time - 1);
         }
       }, 1000);
     }
 
     if (time === 0) {
-      setIsBreak(!isBreak);
-      setTime(breakLength * 60);
+      // setIsBreak(!isBreak);
+      // setTime(breakLength * 60);
+      setIsPlay(false);
     }
     return () => {
       clearInterval(interval);
@@ -105,15 +106,7 @@ function App() {
         </div>
         <div className="box-inner">
           <div id="timer-label">{isBreak ? 'Break' : 'Session'}</div>
-          <div id="time-left">
-            {convertTime(time).min < 10
-              ? '0' + convertTime(time).min
-              : convertTime(time).min}
-            :
-            {convertTime(time).sec < 10
-              ? '0' + convertTime(time).sec
-              : convertTime(time).sec}
-          </div>
+          <div id="time-left">{convertTime(time)}</div>
           <div className="length-box">
             <div id="start_stop">
               <MDBIcon icon={isPlay ? 'pause' : 'play'} onClick={handlerPlay} />
@@ -131,7 +124,12 @@ function App() {
 export default App;
 
 const convertTime = (_time) => {
-  const min = Math.floor(_time / 60);
-  const sec = _time - min * 60;
-  return { min, sec };
+  let min = Math.floor(_time / 60);
+  let sec = _time - min * 60;
+  min = min < 10 ? '0' + min : min;
+  sec = sec < 10 ? '0' + sec : sec;
+  return `${min}:${sec}`;
 };
+
+//* source Audio
+//* https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav

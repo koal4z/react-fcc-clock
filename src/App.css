@@ -1,10 +1,74 @@
 .App {
   width: 100%;
   height: 100vh;
-  background: #f8efd4;
-  color: #de4463;
+  background: #c3aed6;
+  color: #333333;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.box {
+  width: 800px;
+  height: 650px;
+  background-color: #efbbcf;
+  font-size: 4rem;
+  font-weight: 500;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 1px 1px 20px 25px #efbbcf;
+}
+
+.box-inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.box-inner:last-child {
+  grid-column: 1/3;
+}
+
+.length-box {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 1rem;
+  user-select: none;
+}
+
+.length-box > div {
+  margin: 0 1.5rem;
+}
+
+.length-box > i {
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.length-box > i:active {
+  color: rgba(51, 51, 51, 0.6);
+  transform: scale(1.02);
+}
+
+#start_stop > i,
+#reset > i {
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+#start_stop > i:active,
+#reset > i:active {
+  color: rgba(51, 51, 51, 0.6);
+  transform: scale(1.02);
+}
+
+#time-left {
+  font-family: digital;
+  font-size: 10rem;
 }

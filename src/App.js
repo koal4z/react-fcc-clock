@@ -15,6 +15,9 @@ function App() {
   const handlerIncrease = (type) => {
     if (type === 'break' && breakLength < 60) {
       setBreakLength(breakLength + 1);
+      if (isBreak) {
+        setTime(time + 60);
+      }
     }
 
     if (type === 'session' && breakLength < 60) {
@@ -26,6 +29,10 @@ function App() {
   const handlerDecrease = (type) => {
     if (type === 'break' && breakLength > 1) {
       setBreakLength(breakLength - 1);
+      if (isBreak) {
+        setTime(time - 60);
+      }
+
     }
 
     if (type === 'session' && sessionLength > 1) {
@@ -52,9 +59,9 @@ function App() {
       }, 1000);
     }
 
-    if (time.min === 0 && time.sec === 0) {
+    if (time === 0) {
       setIsBreak(!isBreak);
-      setTime(time * breakLength);
+      setTime(breakLength * 60);
     }
     return () => {
       clearInterval(interval);

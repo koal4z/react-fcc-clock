@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 import { MDBIcon } from 'mdbreact';
 
@@ -8,6 +8,7 @@ function App() {
   const [sessionLength, setSessionLength] = useState(25);
   const [isPlay, setIsPlay] = useState(false);
   const [isBreak, setIsBreak] = useState(false);
+  const [audioPlay, setAudioPlay] = useState(false);
   const handlerPlay = () => {
     setIsPlay(!isPlay);
   };
@@ -20,7 +21,7 @@ function App() {
       }
     }
 
-    if (!isPlay && type === 'session' && breakLength < 60) {
+    if (!isPlay && type === 'session' && sessionLength < 60) {
       setSessionLength(sessionLength + 1);
       setTime((sessionLength + 1) * 60);
     }
@@ -46,10 +47,37 @@ function App() {
     setSessionLength(25);
     setIsPlay(false);
     setIsBreak(false);
+    setAudioPlay(true);
+    audios('pause');
   };
 
+  const handlerSwitch = useCallback(() => {
+    if (isBreak) {
+      setIsBreak(false);
+      setTime(sessionLength * 60);
+    } else {
+      setIsBreak(true);
+      setTime(breakLength * 60);
+    }
+  }, [isBreak, sessionLength, breakLength]);
+
+  const audios = useCallback((type) => {
+    const audio = document.getElementById('beep');
+    if (type === 'play') {
+      let playPromise = audio.play();
+      playPromise.then(() => setAudioPlay(true));
+    }
+
+    if (type === 'pause') {
+      if (audioPlay) {
+        audio.pause();
+        audio.currentTime = 0;
+        setAudioPlay(false);
+      }
+    }
+  }, [audioPlay]);
+
   useEffect(() => {
-    // console.log(convertTime(time));
     let interval;
     if (isPlay) {
       interval = setInterval(() => {
@@ -61,15 +89,13 @@ function App() {
 
     if (time === 0) {
       clearInterval(interval);
-      setTimeout(() => {
-        setIsBreak(true);
-        setTime(breakLength * 60);
-      }, 1000);
+      handlerSwitch();
+      audios('play');
     }
     return () => {
       clearInterval(interval);
     };
-  }, [isPlay, time, isBreak, breakLength]);
+  }, [isPlay, time, isBreak, breakLength, sessionLength, handlerSwitch,audios]);
 
   return (
     <div className="App">
@@ -119,6 +145,11 @@ function App() {
           </div>
         </div>
       </div>
+      <audio
+        id="beep"
+        preload="none"
+        src="https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav"
+      ></audio>
     </div>
   );
 }
@@ -132,6 +163,3 @@ const convertTime = (_time) => {
   sec = sec < 10 ? '0' + sec : sec;
   return `${min}:${sec}`;
 };
-
-//* source Audio
-//* https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav
